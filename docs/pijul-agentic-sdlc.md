@@ -89,15 +89,24 @@ agent pressé écrase le travail d'un autre. Le protocole :
    délégué explicitement).
 3. **Fusion contrôlée** : `apply=true` effectue la fusion via
    `pijul apply --channel` — les dépendances suivent, les conflits deviennent
-   un état visible par `pijul_conflict_show`.
+   un état visible par `pijul_conflict_show`. C'est une capacité d'écriture :
+   la validation humaine décrite ici est un protocole de gouvernance, pas un
+   mécanisme d'approbation intégré à l'outil.
 4. **Résolution comme contribution** : la résolution d'un conflit est un
    change ordinaire, relisible, révocable par unrecord si nécessaire (et
    signalé destructif).
 
+**Garde effective** : `PIJUL_MCP_READONLY=1` bloque `apply=true` pour
+`pijul_merge_preview`, mais ne transforme pas le paramètre en approbation
+humaine. En dehors du mode read-only, l'appelant peut déclencher la mutation ;
+ne lui donnez donc pas ce droit si le protocole exige une validation séparée.
+
 ## 3. Frontières de confiance (lecture pour les opérateurs)
 
-- **Mode read-only** : inspection sans risque, y compris pour des agents
-  tierces (`PIJUL_MCP_READONLY`).
+- **Mode read-only** : la garde serveur `PIJUL_MCP_READONLY=1` bloque les
+  7 outils d'écriture dédiés et le chemin `apply=true` de
+  `pijul_merge_preview`. Le mode aperçu de ce dernier reste disponible.
+  Les annotations MCP sont des hints pour le client, pas des contrôles d'accès.
 - **Hints d'annotations** : le client agent lit `readOnlyHint` /
   `destructiveHint` / `openWorldHint` pour auto-modérer ses appels —
   `pijul_push`/`pijul_pull` annoncent `openWorldHint` (remotes).
