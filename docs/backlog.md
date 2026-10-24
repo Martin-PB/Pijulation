@@ -35,7 +35,7 @@
 | 3.1 Garde-fous automatiques : contrôle du gabarit de PR (check_pr.py) + workflow static-checks | 🤖 | P2 | rien | Fait (fusionné le 24/10/2026, PR #1 ; exécution du workflow NOT RUN — crédits Actions) |
 | 3.2 Contrôle anti-collision `P.xx` (doublons/trous du journal) en CI | 🤖 | P2 | 3.1 | Fait (fusionné le 24/10/2026 avec la PR #1 ; exécution NOT RUN — crédits Actions) |
 | 3.3 Protection de branche `main` : PR obligatoire, 1 approbation, pas de force-push | 🧑 | P0 | rien | À faire (réglage GitHub, geste opérateur) |
-| 3.4 Guide « Pijul for agentic SDLC » : mapping intent.md→spec.md→plan.md→diff sur patchs | 🤖 | P3 | 1.3 | À faire |
+| 3.4 Guide « Pijul for agentic SDLC » : mapping intent.md→spec.md→plan.md→diff sur patchs | 🤖 | P3 | 1.3 | En cours (branche `mp-guide-sdlc`, guide rédigé le 24/10/2026, PR ouverte ; relecture humaine attendue) |
 | 3.5 Veille upstream : releases Pijul/Nest, roadmap publique, Forgejo (fédération Phase 4) | 🤖 | P3 | rien | Continu |
 
 ## 4. Upstream (⚙️) — suivi, hors de notre contrôle
