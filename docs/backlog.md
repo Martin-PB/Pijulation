@@ -19,10 +19,10 @@
 
 | Item | Acteur | Prio | Dépend de | Statut |
 |---|---|---|---|---|
-| 2.1 Harnas P0 : round-trip `export(import(x)) == x` sur corpus synthétique de dépôts tests (3 branches en conflit) | 🤖 | P0 | rien | À faire — corpus synthétique uniquement (arbitrage 5.1 tranché) ; **critère de survie du projet** |
+| 2.1 Harnas P0 : round-trip `export(import(x)) == x` sur corpus synthétique (3 branches en conflit) | 🤖 | P0 | rien | À faire — P0 exige l'équivalence des arbres de fichiers et la détection/préservation explicite des conflits ; la topologie des commits Git est un objectif distinct (2.4). **Critère de survie du projet** |
 | 2.2 Traduction aller réelle : `pijul git` par PR, channel `pr-<n>`, base = branche cible | 🤖 | P0 | 2.1 | À faire |
 | 2.3 Export réel : mode `linear` (commit par change, ordre des dépendances, auteurs préservés) | 🤖 | P0 | 2.1 | À faire |
-| 2.4 Export mode `merge-topology` (un merge commit par PR) | 🤖 | P1 | 2.3 | À faire |
+| 2.4 Export mode `merge-topology` (un merge commit par PR) : objectif distinct d'équivalence de topologie Git, hors acceptation P0 | 🤖 | P1 | 2.3 | À faire |
 | 2.5 Règles d'auto-résolution (SameContent, CanonicalFormatting, sémantique union/ours) | 🤖 | P1 | 2.2 | À faire |
 | 2.6 File opérateur persistante + CLI interactif (`operator queue`/`submit`) | 🤖 | P2 | 2.5 | À faire |
 | 2.7 Gestion force-push : invalidation du channel `pr-<n>` sur événement `synchronize` | 🤖 | P2 | 2.6 | À faire |
@@ -48,7 +48,7 @@
 
 ## 5. Arbitrages en attente (opérateur)
 
-- 5.1 Portée du corpus de tests round-trip : **tranché le 24/10/2026 — A, dépôts synthétiques uniquement pour P0**. Les dépôts réels éventuels relèveront d'une extension ultérieure, hors du critère initial d'acceptation.
+- 5.1 Portée et preuve du round-trip : **tranché le 24/10/2026 — C**. P0 porte sur l'équivalence du contenu (arbres de fichiers) et la détection/préservation explicite des conflits sur dépôts synthétiques uniquement. L'équivalence de topologie Git est un objectif distinct (2.4) ; les dépôts réels éventuels relèveront d'une extension ultérieure.
 - 5.2 Benchmark 2.8 : public dès les premiers chiffres, ou après stabilisation ? (risque de sur-promesse vs visibilité du chantier).
 - 5.3 Contribution des deux dépôts à l'upstream (mention, fork communautaire, organisation dédiée) : sur demande explicite uniquement, comme la règle fork→orga du modèle d'origine.
 
