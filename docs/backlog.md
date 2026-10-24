@@ -20,12 +20,12 @@
 | Item | Acteur | Prio | Dépend de | Statut |
 |---|---|---|---|---|
 | 2.1 Harnas P0 : round-trip `export(import(x)) == x` sur corpus synthétique de dépôts tests (3 branches en conflit) | 🤖 | P0 | rien | À faire — corpus synthétique uniquement (arbitrage 5.1 tranché) ; **critère de survie du projet** |
-| 2.2 Traduction aller réelle : `pijul git` par ref, channel `pr-<n>`, base = branche cible | 🤖 | P0 | 2.1 | En cours — import `pijul git` câblé dans `merge-prs`, mapping commit-parent strict, channels `pr-<n>`/`integration`, garde contre force-push non fast-forward ; head PR #4 `d878867a9c702b74fa3645c7c0fd65170ac714ce` ; tests NOT RUN et commandes Pijul non validées |
-| 2.3 Export réel : mode `linear` (commit par change, ordre des dépendances, auteurs préservés) | 🤖 | P0 | 2.1 | En cours expérimental — adaptateur externe `pijul-export`, contrôle arbre/base et ref locale sans push ; dépendance non validée, licence upstream à clarifier, round-trip NOT RUN |
+| 2.2 Traduction aller réelle : `pijul git` par PR, channel `pr-<n>`, base = branche cible | 🤖 | P0 | 2.1 | À faire |
+| 2.3 Export réel : mode `linear` (commit par change, ordre des dépendances, auteurs préservés) | 🤖 | P0 | 2.1 | À faire |
 | 2.4 Export mode `merge-topology` (un merge commit par PR) | 🤖 | P1 | 2.3 | À faire |
-| 2.5 Règles d'auto-résolution (SameContent, CanonicalFormatting, sémantique union/ours) | 🤖 | P1 | 2.2 | À faire — triage P0 détecte et expose les conflits, mais aucune règle automatique ni attribution par PR n'est implémentée |
-| 2.6 File opérateur persistante + CLI interactif (`operator queue`/`submit`) | 🤖 | P2 | 2.5 | Partiel — `queue` lit `pijul status`, `submit` applique un change existant et journalise dans `gateway-audit.jsonl` ; pas de file persistante/CLI interactif ; tests NOT RUN |
-| 2.7 Gestion force-push : invalidation du channel `pr-<n>` sur événement `synchronize` | 🤖 | P2 | 2.6 | Partiel — refuse les têtes non fast-forward pour préserver le channel existant ; invalidation/recréation contrôlée après événement `synchronize` reste à faire |
+| 2.5 Règles d'auto-résolution (SameContent, CanonicalFormatting, sémantique union/ours) | 🤖 | P1 | 2.2 | À faire |
+| 2.6 File opérateur persistante + CLI interactif (`operator queue`/`submit`) | 🤖 | P2 | 2.5 | À faire |
+| 2.7 Gestion force-push : invalidation du channel `pr-<n>` sur événement `synchronize` | 🤖 | P2 | 2.6 | À faire |
 | 2.8 Benchmark public : N PRs en conflit, merge queue Git vs passerelle (fusions manuelles vs auto) | 🧑+🤖 | P2 | 2.1–2.5 | À faire — **la démo de référence** |
 
 ## 3. Pijulation (ce dépôt) — transverse
