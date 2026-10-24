@@ -20,11 +20,11 @@
 | Item | Acteur | Prio | Dépend de | Statut |
 |---|---|---|---|---|
 | 2.1 Harnas P0 : round-trip `export(import(x)) == x` sur corpus synthétique (3 branches en conflit) | 🤖 | P0 | rien | En cours — harnas ajouté et intégré dans [passerelle-Git-Pijul#1](https://github.com/Martin-PB/passerelle-Git-Pijul/pull/1) ; `roundtrip_property_end_to_end` reste ignoré (stubs import/export), tests Cargo NOT RUN. P0 exige l'équivalence des arbres de fichiers et la détection/préservation explicite des conflits ; la topologie Git est un objectif distinct (2.4). **Critère de survie du projet** |
-| 2.2 Traduction aller réelle : `pijul git` par PR, channel `pr-<n>`, base = branche cible | 🤖 | P0 | 2.1 | À faire |
-| 2.3 Export réel : mode `linear` (commit par change, ordre des dépendances, auteurs préservés) | 🤖 | P0 | 2.1 | À faire |
+| 2.2 Traduction aller réelle : `pijul git` par PR, channel `pr-<n>`, base = branche cible | 🤖 | P0 | 2.1 | En cours — implémentation proposée dans [passerelle-Git-Pijul#4](https://github.com/Martin-PB/passerelle-Git-Pijul/pull/4) ; Cargo/Pijul NOT RUN, signature beta à confirmer. |
+| 2.3 Export réel : mode `linear` (commit par change, ordre des dépendances, auteurs préservés) | 🤖 | P0 | 2.1 | En cours — adaptateur expérimental `pijul-export` proposé dans [passerelle-Git-Pijul#4](https://github.com/Martin-PB/passerelle-Git-Pijul/pull/4) ; exécution réelle et round-trip NOT RUN, aucun push distant. |
 | 2.4 Export mode `merge-topology` (un merge commit par PR) : objectif distinct d'équivalence de topologie Git, hors acceptation P0 | 🤖 | P1 | 2.3 | À faire |
 | 2.5 Règles d'auto-résolution (SameContent, CanonicalFormatting, sémantique union/ours) | 🤖 | P1 | 2.2 | À faire |
-| 2.6 File opérateur persistante + CLI interactif (`operator queue`/`submit`) | 🤖 | P2 | 2.5 | À faire |
+| 2.6 File opérateur persistante + CLI interactif (`operator queue`/`submit`) | 🤖 | P2 | 2.5 | En cours — `operator queue`/`submit` proposés dans [passerelle-Git-Pijul#4](https://github.com/Martin-PB/passerelle-Git-Pijul/pull/4) ; la file n'est pas persistante et Cargo NOT RUN. |
 | 2.7 Gestion force-push : invalidation du channel `pr-<n>` sur événement `synchronize` | 🤖 | P2 | 2.6 | À faire |
 | 2.8 Benchmark public : N PRs en conflit, merge queue Git vs passerelle (fusions manuelles vs auto) | 🧑+🤖 | P2 | 2.1–2.5 | À faire — **la démo de référence** |
 
