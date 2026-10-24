@@ -8,8 +8,8 @@
 
 | Item | Acteur | Prio | Dépend de | Statut |
 |---|---|---|---|---|
-| 1.1 Intégration continue : GitHub Actions + pijul dans le runner | 🤖 | P1 | rien | À faire (issue « Integration tests ») |
-| 1.2 Tests d'intégration sur dépôts générés (hermétiques, pas de réseau) | 🤖 | P1 | 1.1 | À faire (issue dédiée) |
+| 1.1 Intégration continue : GitHub Actions + pijul dans le runner | 🤖 | P1 | rien | En cours (branche `mp-ci-tests` sur MCP-Pijul, PR « CI + tests d'intégration » ouverte le 24/10/2026) |
+| 1.2 Tests d'intégration sur dépôts générés (hermétiques, pas de réseau) | 🤖 | P1 | 1.1 | En cours (branche `mp-ci-tests` sur MCP-Pijul, PR « CI + tests d'intégration » ouverte le 24/10/2026) |
 | 1.3 `pijul_merge_preview` : preview de commutation et conflits restants SANS toucher au working copy | 🤖 | P1 | 1.2 (harnas) | À faire (issue dédiée) — **l'outil killer** |
 | 1.4 Mode read-only + annotations `readOnlyHint`/`destructiveHint` | 🤖 | P2 | rien | À faire (issue dédiée) |
 | 1.5 Intégration Nest : API du Nest à investiguer, puis `nest_list_changes` etc. | 🤖 | P2 | dispo API Nest (⚙️) | Bloqué (API Nest non documentée publiquement) |
@@ -32,8 +32,8 @@
 
 | Item | Acteur | Prio | Dépend de | Statut |
 |---|---|---|---|---|
-| 3.1 Garde-fous automatiques : lint markdown + contrôle du gabarit de PR (équivalent pr-gate) | 🤖 | P2 | rien | À faire |
-| 3.2 Contrôle anti-collision `P.xx` (doublons/trous du journal) en CI | 🤖 | P2 | 3.1 | À faire |
+| 3.1 Garde-fous automatiques : contrôle du gabarit de PR (check_pr.py) + workflow static-checks | 🤖 | P2 | rien | En cours (branche `mp-garde-fous`, PR « garde-fous » ouverte le 24/10/2026) |
+| 3.2 Contrôle anti-collision `P.xx` (doublons/trous du journal) en CI | 🤖 | P2 | 3.1 | En cours (branche `mp-garde-fous`, PR « garde-fous » ouverte le 24/10/2026) |
 | 3.3 Protection de branche `main` : PR obligatoire, 1 approbation, pas de force-push | 🧑 | P0 | rien | À faire (réglage GitHub, geste opérateur) |
 | 3.4 Guide « Pijul for agentic SDLC » : mapping intent.md→spec.md→plan.md→diff sur patchs | 🤖 | P3 | 1.3 | À faire |
 | 3.5 Veille upstream : releases Pijul/Nest, roadmap publique, Forgejo (fédération Phase 4) | 🤖 | P3 | rien | Continu |
