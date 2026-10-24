@@ -1,0 +1,38 @@
+name: static-checks
+
+# Garde-fous du dépôt Pijulation : gabarit de PR (check_pr), journal
+# (check_docs), autotests (selftest). Rapide, sans réseau au-delà de l'API
+# GitHub nécessaire au listing des fichiers de PR.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: static-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: selftest (autotests des contrôleurs)
+        run: python3 ci/selftest.py
+      - name: check_docs (journal)
+        run: python3 ci/check_docs.py docs/journal-evolutions.md
+      - name: check_pr (gabarit de la PR)
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr view "$PR_NUMBER" --json body --jq .body > /tmp/body.md
+          gh pr view "$PR_NUMBER" --json files --jq '.files[].path' > /tmp/files.txt
+          python3 ci/check_pr.py --body /tmp/body.md --files /tmp/files.txt
