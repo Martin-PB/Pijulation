@@ -23,6 +23,7 @@ check_pr.py + workflow.
 ## Périmètre
 ci/check_pr.py
 .github/workflows/static-checks.yml
+docs/backlog.md
 backlog 3.1 (ligne mise à jour : En cours)
 
 ## Ce que l'agent a fait / ce que l'humain a changé
