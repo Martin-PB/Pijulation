@@ -20,7 +20,7 @@
 | Item | Acteur | Prio | Dépend de | Statut |
 |---|---|---|---|---|
 | 2.1 Harnas P0 : round-trip `export(import(x)) == x` sur corpus synthétique de dépôts tests (3 branches en conflit) | 🤖 | P0 | rien | À faire — corpus synthétique uniquement (arbitrage 5.1 tranché) ; **critère de survie du projet** |
-| 2.2 Traduction aller réelle : `pijul git` par ref, channel `pr-<n>`, base = branche cible | 🤖 | P0 | 2.1 | En cours — première tranche d'ingest (miroir bare, refs épinglées, contrôle du SHA attendu) dans [passerelle PR #4](https://github.com/Martin-PB/passerelle-Git-Pijul/pull/4), head `43bce5de6d87827907c593fb3c1bc89a1d129867` ; tests écrits mais NOT RUN ; traduction Pijul et channels nommés encore à faire |
+| 2.2 Traduction aller réelle : `pijul git` par ref, channel `pr-<n>`, base = branche cible | 🤖 | P0 | 2.1 | En cours — première tranche d'ingest (miroir bare, refs épinglées, contrôle du SHA attendu) dans [passerelle PR #4](https://github.com/Martin-PB/passerelle-Git-Pijul/pull/4), head `18aeebaddab319d4a7b017576c464c4b0915a41b` ; tests écrits mais NOT RUN ; traduction Pijul et channels nommés encore à faire |
 | 2.3 Export réel : mode `linear` (commit par change, ordre des dépendances, auteurs préservés) | 🤖 | P0 | 2.1 | À faire |
 | 2.4 Export mode `merge-topology` (un merge commit par PR) | 🤖 | P1 | 2.3 | À faire |
 | 2.5 Règles d'auto-résolution (SameContent, CanonicalFormatting, sémantique union/ours) | 🤖 | P1 | 2.2 | À faire |
