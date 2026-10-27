@@ -93,3 +93,10 @@ payload of an already accepted event while leaving `acceptedPayload` unchanged.
 The configuration `ProvenancePayloadTamper.cfg` should make TLC report a
 counterexample to `AcceptedContentRetained`. This is an expected negative test,
 not evidence that TLC has already been run.
+
+
+A second negative test, `ProvenancePayloadOverwrite.tla` with
+`ProvenancePayloadOverwrite.cfg`, mutates the frozen `acceptedPayload` record
+while leaving `payloadOf` unchanged. TLC should also find a counterexample to
+`AcceptedContentRetained`. Both negative models are intentional fault
+injections; neither has been executed with TLC yet.
