@@ -8,11 +8,11 @@ ASSUME Payloads # {}
 ASSUME NoPayload \notin Payloads
 ASSUME MaxCrashes \in Nat
 
-VARIABLES occurred, accepted, payloadOf, pending, log,
+VARIABLES occurred, accepted, payloadOf, pending, log, priorLog,
           captureUp, storageUp, crashesLeft, bypassed, gaps
 
 vars ==
-  <<occurred, accepted, payloadOf, pending, log,
+  <<occurred, accepted, payloadOf, pending, log, priorLog,
     captureUp, storageUp, crashesLeft, bypassed, gaps>>
 
 LogSet(s) ==
@@ -32,6 +32,7 @@ Init ==
   \land payloadOf = [e \in Events |-> NoPayload]
   \land pending = {}
   \land log = << >>
+  \land priorLog = << >>
   \land captureUp = TRUE
   \land storageUp = TRUE
   \land crashesLeft = MaxCrashes
@@ -49,13 +50,14 @@ CaptureEvent(e, p) ==
   \land accepted' = accepted \cup {e}
   \land payloadOf' = [payloadOf EXCEPT ![e] = p]
   \land pending' = pending \cup {e}
-  \land UNCHANGED <<log, captureUp, storageUp, crashesLeft,
+  \land UNCHANGED <<log, priorLog, captureUp, storageUp, crashesLeft,
                     bypassed, gaps>>
 
 Persist(e) ==
   \land e \in pending
   \land storageUp
   \land e \notin LogSet(log)
+  \land priorLog' = log
   \land log' = Append(log, e)
   \land pending' = pending \ {e}
   \land UNCHANGED <<occurred, accepted, payloadOf,
@@ -70,19 +72,19 @@ CrashStorage ==
   \land crashesLeft > 0
   \land storageUp' = FALSE
   \land crashesLeft' = crashesLeft - 1
-  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log,
+  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
                     captureUp, bypassed, gaps>>
 
 RecoverStorage ==
   \land ~storageUp
   \land storageUp' = TRUE
-  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log,
+  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
                     captureUp, crashesLeft, bypassed, gaps>>
 
 StopCapture ==
   \land captureUp
   \land captureUp' = FALSE
-  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log,
+  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
                     storageUp, crashesLeft, bypassed, gaps>>
 
 StartCapture ==
@@ -100,14 +102,14 @@ BypassEvent(e, p) ==
   \land occurred' = occurred \cup {e}
   \land payloadOf' = [payloadOf EXCEPT ![e] = p]
   \land bypassed' = bypassed \cup {e}
-  \land UNCHANGED <<accepted, pending, log, captureUp, storageUp,
+  \land UNCHANGED <<accepted, pending, log, priorLog, captureUp, storageUp,
                     crashesLeft, gaps>>
 
 ReportGap(e) ==
   \land e \in bypassed
   \land e \notin gaps
   \land gaps' = gaps \cup {e}
-  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log,
+  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
                     captureUp, storageUp, crashesLeft, bypassed>>
 
 Next ==
@@ -124,6 +126,8 @@ TypeOK ==
   \land accepted \subseteq occurred
   \land pending \subseteq accepted
   \land LogSet(log) \subseteq accepted
+  \land priorLog \in Seq(Events)
+  \land IsPrefix(priorLog, log)
   \land payloadOf \in [Events -> Payloads \cup {NoPayload}]
   \land \A e \in accepted : payloadOf[e] \in Payloads
   \land bypassed \subseteq occurred
@@ -148,12 +152,13 @@ AcceptedPartition ==
 Safety ==
   \land TypeOK
   \land NoDuplicateLogIds
+  \land PreviousLogIsPrefix
   \land AcceptedContentRetained
   \land NoUnreportedBypass
   \land AcceptedPartition
 
-AppendOnlyStep ==
-  IsPrefix(log, log')
+PreviousLogIsPrefix ==
+  IsPrefix(priorLog, log)
 
 EventuallyPersisted ==
   \A e \in Events : (e \in accepted) ~> (e \in LogSet(log))
@@ -161,7 +166,6 @@ EventuallyPersisted ==
 Spec ==
   \land Init
   \land [][Next]_vars
-  \land [](Next => AppendOnlyStep)
   \land \A e \in Events : WF_vars(Persist(e))
   \land WF_vars(RecoverStorage)
 ============================================================
