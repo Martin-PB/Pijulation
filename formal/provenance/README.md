@@ -19,6 +19,8 @@ that real-world activity is exhaustively observed. It distinguishes:
    This is an abstraction: implementation must prove or test the corresponding
    local write-ahead-log behavior.
 3. Canonical persistence appends an accepted event and removes it from pending.
+   The `acceptedPayload` map freezes the payload at acceptance, and the
+   `AcceptedContentRetained` invariant checks that the accepted payload is unchanged.
 4. Storage outages can delay persistence; accepted events remain in the pending
    set until persisted.
 5. The journal is append-only: `priorLog` records the log immediately before
