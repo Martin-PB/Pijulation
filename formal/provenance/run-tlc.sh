@@ -79,7 +79,8 @@ if [[ -z "$TLC_JAR" || ! -s "$TLC_JAR" ]]; then
     if curl --fail --location --connect-timeout 10 --max-time 120 \
       https://github.com/tlaplus/tlaplus/releases/latest/download/tla2tools.jar \
       --output "$tmp" 2>&1 | tee "$LOG_DIR/tlc-download.log"; then
-      if [[ -s "$tmp" ]] && java -cp "$tmp" tlc2.TLC -help >/dev/null 2>&1; then
+      help_output="$(java -cp "$tmp" tlc2.TLC -help 2>&1 || true)"
+      if [[ -s "$tmp" ]] && grep -Eqi 'TLC|TLA\+' <<<"$help_output"; then
         mv "$tmp" "$HOME/.local/share/tlaplus/tla2tools.jar"
         TLC_JAR="$HOME/.local/share/tlaplus/tla2tools.jar"
       else
@@ -96,7 +97,8 @@ if [[ -z "$TLC_JAR" || ! -s "$TLC_JAR" ]]; then
   exit 2
 fi
 printf 'TLC JAR : %s\n' "$TLC_JAR"
-if ! java -cp "$TLC_JAR" tlc2.TLC -help >/dev/null 2>&1; then
+help_output="$(java -cp "$TLC_JAR" tlc2.TLC -help 2>&1 || true)"
+if ! grep -Eqi 'TLC|TLA\+' <<<"$help_output"; then
   echo "FAIL: le fichier TLC n'est pas un JAR valide."
   exit 2
 fi
