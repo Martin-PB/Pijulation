@@ -21,8 +21,10 @@ that real-world activity is exhaustively observed. It distinguishes:
 3. Canonical persistence appends an accepted event and removes it from pending.
 4. Storage outages can delay persistence; accepted events remain in the pending
    set until persisted.
-5. The journal is append-only: every transition must preserve the previous log
-   as a prefix.
+5. The journal is append-only: `priorLog` records the log immediately before
+   the latest persistence transition; `TypeOK` checks that it is a prefix of
+   the current log. The TLC invariant therefore checks a state predicate rather
+   than relying on a temporal formula containing primed variables.
 6. The model contains no privacy/publicity classification and no content-based
    retention filter. Payloads are opaque values.
 7. A bypass is not silently treated as captured. `ProvenanceBypass.tla` adds
@@ -44,7 +46,9 @@ the contract.
 
 The invariant `AcceptedPartition` states that every accepted event is either
 pending or present in the canonical log, but never both. It is the central
-no-logical-loss invariant.
+no-logical-loss invariant. The `priorLog` state variable makes append-only
+history checkable as a TLC state invariant; every action must frame it, while
+`Persist(e)` updates it to the pre-append log.
 
 Cryptographic tamper evidence, signatures, external witnesses, causal ordering,
 multi-source event identity, Pijul change correlation and validation digests are
@@ -58,7 +62,7 @@ not yet modeled. They are the next refinement layer.
 | M-02 | No duplicate event IDs in canonical log | Pass | `NoDuplicateLogIds` |
 | M-03 | Persisted event retains its accepted payload | Pass | `AcceptedContentRetained` |
 | M-04 | Every accepted event is pending or persisted, but not both | Pass | `AcceptedPartition` |
-| M-05 | Every transition preserves the previous log as a prefix | Pass | `AppendOnlyStep` action property |
+| M-05 | Last recorded prior log is a prefix of the current log | Pass expected | `TypeOK` invariant over `priorLog`; TLC execution pending |
 | M-06 | Controlled capture while capture gate is down | No such transition | `CaptureEvent` precondition |
 | M-07 | Unreported activity bypassing the gate | Expected counterexample; not yet run | `ProvenanceBypass.cfg`, `NoUnreportedBypass` |
 | M-08 | Bounded storage outages followed by recovery | Liveness should pass in this finite model | `MaxCrashes`, fairness, `EventuallyPersisted` |
