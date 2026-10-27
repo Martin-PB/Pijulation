@@ -8,11 +8,11 @@ ASSUME Payloads # {}
 ASSUME NoPayload \notin Payloads
 ASSUME MaxCrashes \in Nat
 
-VARIABLES occurred, accepted, payloadOf, pending, log, priorLog,
+VARIABLES occurred, accepted, payloadOf, acceptedPayload, pending, log, priorLog,
           captureUp, storageUp, crashesLeft, bypassed, gaps
 
 vars ==
-  <<occurred, accepted, payloadOf, pending, log, priorLog,
+  <<occurred, accepted, payloadOf, acceptedPayload, pending, log, priorLog,
     captureUp, storageUp, crashesLeft, bypassed, gaps>>
 
 LogSet(s) ==
@@ -30,6 +30,7 @@ Init ==
   /\ occurred = {}
   /\ accepted = {}
   /\ payloadOf = [e \in Events |-> NoPayload]
+  /\ acceptedPayload = [e \in Events |-> NoPayload]
   /\ pending = {}
   /\ log = << >>
   /\ priorLog = << >>
@@ -49,6 +50,7 @@ CaptureEvent(e, p) ==
   /\ occurred' = occurred \cup {e}
   /\ accepted' = accepted \cup {e}
   /\ payloadOf' = [payloadOf EXCEPT ![e] = p]
+  /\ acceptedPayload' = [acceptedPayload EXCEPT ![e] = p]
   /\ pending' = pending \cup {e}
   /\ UNCHANGED <<log, priorLog, captureUp, storageUp, crashesLeft,
                     bypassed, gaps>>
@@ -60,7 +62,7 @@ Persist(e) ==
   /\ priorLog' = log
   /\ log' = Append(log, e)
   /\ pending' = pending \ {e}
-  /\ UNCHANGED <<occurred, accepted, payloadOf,
+  /\ UNCHANGED <<occurred, accepted, payloadOf, acceptedPayload,
                     captureUp, storageUp, crashesLeft,
                     bypassed, gaps>>
 
@@ -72,7 +74,7 @@ CrashStorage ==
   /\ crashesLeft > 0
   /\ storageUp' = FALSE
   /\ crashesLeft' = crashesLeft - 1
-  /\ UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
+  /\ UNCHANGED <<occurred, accepted, payloadOf, acceptedPayload, pending, log, priorLog,
                     captureUp, bypassed, gaps>>
 
 RecoverStorage ==
@@ -109,7 +111,7 @@ ReportGap(e) ==
   /\ e \in bypassed
   /\ e \notin gaps
   /\ gaps' = gaps \cup {e}
-  /\ UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
+  /\ UNCHANGED <<occurred, accepted, payloadOf, acceptedPayload, pending, log, priorLog,
                     captureUp, storageUp, crashesLeft, bypassed>>
 
 Next ==
@@ -129,7 +131,8 @@ TypeOK ==
   /\ priorLog \in Seq(Events)
   /\ IsPrefix(priorLog, log)
   /\ payloadOf \in [Events -> Payloads \cup {NoPayload}]
-  /\ \A e \in accepted : payloadOf[e] \in Payloads
+  /\ acceptedPayload \in [Events -> Payloads \cup {NoPayload}]
+  /\ \A e \in accepted : acceptedPayload[e] \in Payloads
   /\ bypassed \subseteq occurred
   /\ gaps \subseteq bypassed
   /\ crashesLeft \in Nat
@@ -140,7 +143,9 @@ NoDuplicateLogIds ==
   IsUnique(log)
 
 AcceptedContentRetained ==
-  \A e \in LogSet(log) : payloadOf[e] \in Payloads
+  \A e \in accepted :
+    /\ acceptedPayload[e] = payloadOf[e]
+    /\ acceptedPayload[e] \in Payloads
 
 NoUnreportedBypass ==
   bypassed \subseteq gaps
