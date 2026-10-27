@@ -1,9 +1,9 @@
 # Pijulation provenance model (TLA+)
 
-Status: **initial executable specification; not yet TLC-validated**.
+Status: **initial specification; TLC execution still required before claiming verification**.
 
-This model formalizes the journal boundary first. It does not claim to prove that
-real-world activity is exhaustively observed. It distinguishes:
+This model formalizes the journal boundary first. It does not claim to prove
+that real-world activity is exhaustively observed. It distinguishes:
 
 - `occurred`: modeled activities in the environment;
 - `accepted`: events accepted by the capture gate;
@@ -19,7 +19,8 @@ real-world activity is exhaustively observed. It distinguishes:
    This is an abstraction: implementation must prove or test the corresponding
    local write-ahead-log behavior.
 3. Canonical persistence appends an accepted event and removes it from pending.
-4. Storage outage can delay persistence; it must not silently erase pending events.
+4. Storage outages can delay persistence; accepted events remain in the pending
+   set until persisted.
 5. The journal is append-only: every transition must preserve the previous log
    as a prefix.
 6. The model contains no privacy/publicity classification and no content-based
@@ -30,18 +31,20 @@ real-world activity is exhaustively observed. It distinguishes:
 
 ## Guarantees and boundaries
 
-The intended liveness claim is that every accepted event is eventually persisted.
-That claim requires the storage to recover and eventually remain available, plus
-fair scheduling of persistence. The current `Spec` includes weak fairness for
-persistence and recovery, but does **not** by itself assume that storage
-eventually remains up. TLC may therefore find a liveness counterexample caused
-by repeated outages. If so, that is an explicit missing assumption, not a reason
-to weaken the property silently.
+The liveness property states that every accepted event is eventually persisted.
+The model bounds storage crashes with `MaxCrashes`, and gives weak fairness to
+recovery and to persistence of each event. This makes outages finite in the
+bounded model. It does not model permanent media loss, disk exhaustion, loss of
+the durable spool, or an adversary able to rewrite storage.
 
 The model assumes the capture gate's acceptance step and durable-spool write are
-atomic. This is a refinement obligation for the implementation. If the capture
-process can acknowledge an event before its payload is durably spooled, a crash
-can violate the contract.
+atomic. This is a refinement obligation for the implementation. If capture
+acknowledges an event before its payload is durably spooled, a crash can violate
+the contract.
+
+The invariant `AcceptedPartition` states that every accepted event is either
+pending or present in the canonical log, but never both. It is the central
+no-logical-loss invariant.
 
 Cryptographic tamper evidence, signatures, external witnesses, causal ordering,
 multi-source event identity, Pijul change correlation and validation digests are
@@ -53,22 +56,22 @@ not yet modeled. They are the next refinement layer.
 |---|---|---|---|
 | M-01 | Type and state consistency | Pass | `TypeOK` invariant |
 | M-02 | No duplicate event IDs in canonical log | Pass | `NoDuplicateLogIds` |
-| M-03 | Persisted event retains an accepted payload | Pass | `AcceptedContentRetained` |
-| M-04 | Pending events are not also pending after persistence | Pass | `NoSilentPendingLoss` |
+| M-03 | Persisted event retains its accepted payload | Pass | `AcceptedContentRetained` |
+| M-04 | Every accepted event is pending or persisted, but not both | Pass | `AcceptedPartition` |
 | M-05 | Every transition preserves the previous log as a prefix | Pass | `AppendOnlyStep` action property |
 | M-06 | Controlled capture while capture gate is down | No such transition | `CaptureEvent` precondition |
 | M-07 | Unreported activity bypassing the gate | Counterexample if bypass is added to `Next` | `NoUnreportedBypass` |
-| M-08 | Repeated storage outages can prevent progress | Counterexample possible without eventual-stability assumption | `EventuallyPersisted` |
-| M-09 | Two different payloads reuse one event ID | Rejected by model identity contract; collision scenario still needs an explicit negative model |
+| M-08 | Bounded storage outages followed by recovery | Liveness should pass in this finite model | `MaxCrashes`, fairness, `EventuallyPersisted` |
+| M-09 | Two different payloads reuse one event ID | Not yet modeled as a separate negative case | Next refinement |
 | M-10 | Validation result references exact code digest | Not modeled yet | Next refinement |
 | M-11 | Causal order across ACP/MCP/filesystem/Pijul | Not modeled yet | Next refinement |
 | M-12 | Merkle consistency / externally detectable split views | Not modeled yet | Next refinement |
 
 ## Next refinement order
 
-1. Make TLC syntax and bounded model checking pass locally.
+1. Execute TLC locally and resolve all syntax, state-space and liveness findings.
 2. Add explicit event identity/payload-collision negative tests.
-3. Add a failure-injection model for capture/spool/canonical-store boundaries.
+3. Add failure injection at the capture/spool/canonical-store boundaries.
 4. Add causal references and multi-source ordering.
 5. Bind validation records to exact content digests and toolchain/configuration.
 6. Add cryptographic journal commitments and consistency proofs.
