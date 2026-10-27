@@ -80,19 +80,19 @@ CrashStorage ==
 RecoverStorage ==
   /\ ~storageUp
   /\ storageUp' = TRUE
-  /\ UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
+  /\ UNCHANGED <<occurred, accepted, payloadOf, acceptedPayload, pending, log, priorLog,
                     captureUp, crashesLeft, bypassed, gaps>>
 
 StopCapture ==
   /\ captureUp
   /\ captureUp' = FALSE
-  /\ UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
+  /\ UNCHANGED <<occurred, accepted, payloadOf, acceptedPayload, pending, log, priorLog,
                     storageUp, crashesLeft, bypassed, gaps>>
 
 StartCapture ==
   /\ ~captureUp
   /\ captureUp' = TRUE
-  /\ UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
+  /\ UNCHANGED <<occurred, accepted, payloadOf, acceptedPayload, pending, log, priorLog,
                     storageUp, crashesLeft, bypassed, gaps>>
 
 \* Negative-test action: an execution path outside the capture gate.
