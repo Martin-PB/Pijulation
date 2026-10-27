@@ -84,3 +84,12 @@ not yet modeled. They are the next refinement layer.
 7. Define a refinement map from implementation events to this abstract state.
 
 No GitHub Actions were launched for this work.
+
+
+## Negative test: accepted payload mutation
+
+`ProvenancePayloadTamper.tla` deliberately adds a transition that changes the
+payload of an already accepted event while leaving `acceptedPayload` unchanged.
+The configuration `ProvenancePayloadTamper.cfg` should make TLC report a
+counterexample to `AcceptedContentRetained`. This is an expected negative test,
+not evidence that TLC has already been run.
