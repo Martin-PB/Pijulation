@@ -100,3 +100,22 @@ A second negative test, `ProvenancePayloadOverwrite.tla` with
 while leaving `payloadOf` unchanged. TLC should also find a counterexample to
 `AcceptedContentRetained`. Both negative models are intentional fault
 injections; neither has been executed with TLC yet.
+
+## Local TLC runner
+
+From the root of a Pijulation checkout, run:
+
+```bash
+bash formal/provenance/run-tlc.sh
+```
+
+The runner checks the four configurations in order: the main model must pass,
+and each of the three fault-injection models must produce an invariant
+counterexample. It writes full logs and a TSV summary under
+`~/pijulation-tla-logs/<timestamp>/`. If Java is present but TLC is missing,
+it attempts to download the official `tla2tools.jar` release; in an offline
+environment it reports the missing dependency without modifying model files.
+The runner deliberately uses Bash (no executable-bit requirement), retains the
+terminal output, and pauses at the end when run interactively. A passing run
+checks these finite specifications only; it does not prove implementation
+refinement or exhaustive real-world capture.
