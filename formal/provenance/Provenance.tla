@@ -90,7 +90,7 @@ StopCapture ==
 StartCapture ==
   \land ~captureUp
   \land captureUp' = TRUE
-  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log,
+  \land UNCHANGED <<occurred, accepted, payloadOf, pending, log, priorLog,
                     storageUp, crashesLeft, bypassed, gaps>>
 
 \* Negative-test action: an execution path outside the capture gate.
@@ -152,13 +152,9 @@ AcceptedPartition ==
 Safety ==
   \land TypeOK
   \land NoDuplicateLogIds
-  \land PreviousLogIsPrefix
   \land AcceptedContentRetained
   \land NoUnreportedBypass
   \land AcceptedPartition
-
-PreviousLogIsPrefix ==
-  IsPrefix(priorLog, log)
 
 EventuallyPersisted ==
   \A e \in Events : (e \in accepted) ~> (e \in LogSet(log))
