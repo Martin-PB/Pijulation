@@ -25,9 +25,9 @@ that real-world activity is exhaustively observed. It distinguishes:
    as a prefix.
 6. The model contains no privacy/publicity classification and no content-based
    retention filter. Payloads are opaque values.
-7. A bypass is not silently treated as captured. The negative-test action
-   `BypassEvent` is intentionally excluded from `Next`; adding it to the
-   transition relation should produce a counterexample to `NoUnreportedBypass`.
+7. A bypass is not silently treated as captured. `ProvenanceBypass.tla` adds
+   the bypass action to the transition relation; its TLC configuration is
+   expected to produce a counterexample to `NoUnreportedBypass`.
 
 ## Guarantees and boundaries
 
@@ -60,7 +60,7 @@ not yet modeled. They are the next refinement layer.
 | M-04 | Every accepted event is pending or persisted, but not both | Pass | `AcceptedPartition` |
 | M-05 | Every transition preserves the previous log as a prefix | Pass | `AppendOnlyStep` action property |
 | M-06 | Controlled capture while capture gate is down | No such transition | `CaptureEvent` precondition |
-| M-07 | Unreported activity bypassing the gate | Counterexample if bypass is added to `Next` | `NoUnreportedBypass` |
+| M-07 | Unreported activity bypassing the gate | Expected counterexample; not yet run | `ProvenanceBypass.cfg`, `NoUnreportedBypass` |
 | M-08 | Bounded storage outages followed by recovery | Liveness should pass in this finite model | `MaxCrashes`, fairness, `EventuallyPersisted` |
 | M-09 | Two different payloads reuse one event ID | Not yet modeled as a separate negative case | Next refinement |
 | M-10 | Validation result references exact code digest | Not modeled yet | Next refinement |
