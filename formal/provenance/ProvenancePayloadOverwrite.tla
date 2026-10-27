@@ -4,9 +4,9 @@ EXTENDS Provenance
 OverwriteAcceptedPayload(e, p) ==
   /\ e \in accepted
   /\ p \in Payloads
-  /\ p # acceptedPayload[e]
-  /\ payloadOf' = [payloadOf EXCEPT ![e] = p]
-  /\ UNCHANGED <<occurred, accepted, acceptedPayload, pending, log,
+  /\ p # payloadOf[e]
+  /\ acceptedPayload' = [acceptedPayload EXCEPT ![e] = p]
+  /\ UNCHANGED <<occurred, accepted, payloadOf, pending, log,
                   priorLog, captureUp, storageUp, crashesLeft,
                   bypassed, gaps>>
 
