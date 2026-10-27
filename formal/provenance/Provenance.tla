@@ -104,7 +104,7 @@ BypassEvent(e, p) ==
   /\ occurred' = occurred \cup {e}
   /\ payloadOf' = [payloadOf EXCEPT ![e] = p]
   /\ bypassed' = bypassed \cup {e}
-  /\ UNCHANGED <<accepted, pending, log, priorLog, captureUp, storageUp,
+  /\ UNCHANGED <<accepted, acceptedPayload, pending, log, priorLog, captureUp, storageUp,
                     crashesLeft, gaps>>
 
 ReportGap(e) ==
